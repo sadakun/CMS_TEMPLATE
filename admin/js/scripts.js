@@ -6,7 +6,7 @@ $(document).ready(function () {
         .catch(error => {
             console.error(error);
         });
-
+    // checked all checkbox
     $('#selectAllBoxes').click(function (event) {
         if (this.checked) {
             $('.checkBoxes').each(function () {
