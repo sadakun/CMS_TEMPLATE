@@ -10,7 +10,7 @@ if (isset($_POST['create_post'])) {
     $post_image_temp = $_FILES['image']['tmp_name'];
 
     $post_tag = $_POST['post_tag'];
-    $post_content = $_POST['post_content'];
+    $post_content = mysqli_real_escape_string($connection, $_POST['post_content']);
     $post_date = date('d-m-y');
 
     move_uploaded_file($post_image_temp, "../images/$post_image");
