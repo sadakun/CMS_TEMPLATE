@@ -2,18 +2,19 @@
 <?php include "includes/header.php"; ?>
 <!-- Navigation -->
 <?php include "includes/navigation.php"; ?>
+<?php include "admin/functions.php"; ?>
 
 <?php
 if (isset($_POST['submit'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $email = $_POST['email'];
+    $username   = $_POST['username'];
+    $password   = $_POST['password'];
+    $email      = $_POST['email'];
 
-    if (!empty($username) && !empty($password) && !empty($email)) {
+    if (!empty($username) && !empty($email) && !empty($password)) {
 
-        $username = mysqli_real_escape_string($connection, $username);
-        $password = mysqli_real_escape_string($connection, $password);
-        $email = mysqli_real_escape_string($connection, $email);
+        $username = escape($username);
+        $password = escape($password);
+        $email    = escape($email);
 
         $password = password_hash($password, PASSWORD_BCRYPT, array('cost' => 12));     /// NEW WAY ENCRYPT PASSWORD
 

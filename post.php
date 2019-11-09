@@ -26,7 +26,7 @@
 
                 while ($row = mysqli_fetch_assoc($all_posts)) {
                     $post_title = $row['post_title'];
-                    $post_author = $row['post_author'];
+                    $post_author = $row['post_user'];
                     $post_date = $row['post_date'];
                     $post_image = $row['post_image'];
                     $post_content = $row['post_content'];
@@ -67,7 +67,7 @@
                 $get_post_id = $_GET['p_id'];
                 $comment_author = $_POST['comment_author'];
                 $comment_email = $_POST['comment_email'];
-                $comment_content = $_POST['comment_content'];
+                $comment_content = mysqli_real_escape_string($connection, $_POST['comment_content']);
 
                 if (!empty($comment_author) && !empty($comment_email) && !empty($comment_content)) {
                     $query = "INSERT INTO comments (comment_post_id, comment_author, comment_email, comment_content, comment_status, comment_date)";

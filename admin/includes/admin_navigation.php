@@ -1,4 +1,3 @@
-<!-- Navigation -->
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -131,16 +130,6 @@
                 <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
             </li>
 
-            <!-- <li>
-                <a href="charts.html"><i class="fa fa-fw fa-bar-chart-o"></i> Charts</a>
-            </li>
-            <li>
-                <a href="tables.html"><i class="fa fa-fw fa-table"></i> Tables</a>
-            </li>
-            <li>
-                <a href="forms.html"><i class="fa fa-fw fa-edit"></i> Forms</a>
-            </li> -->
-
             <li>
                 <a href="javascript:;" data-toggle="collapse" data-target="#posts_dropdown "><i class="fa fa-fw fa-file-text"></i> Posts <i class="fa fa-fw fa-caret-down"></i></a>
                 <ul id="posts_dropdown" class="collapse">
@@ -152,6 +141,7 @@
                     </li>
                 </ul>
             </li>
+
             <li>
                 <a href="./categories.php"><i class="fa fa-fw fa-list"></i> Categories</a>
             </li>

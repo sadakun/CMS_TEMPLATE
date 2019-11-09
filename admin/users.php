@@ -30,14 +30,6 @@
                             include "includes/edit_user.php";
                             break;
 
-                        case '3';
-                            echo "nice 3";
-                            break;
-
-                        case '4';
-                            echo "nice 4";
-                            break;
-
                         default:
                             include "includes/view_all_users.php";
                     }

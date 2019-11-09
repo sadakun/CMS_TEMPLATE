@@ -16,16 +16,16 @@
             <?php
 
             if (isset($_GET['p_id'])) {
-                $get_post_id = $_GET['p_id'];
-                $get_post_author = $_GET['author'];
+                $get_post_id = escape($_GET['p_id']);
+                $get_post_author = escape($_GET['author']);
             }
 
-            $query = "SELECT * FROM posts WHERE post_author = '{$get_post_author}' ";
+            $query = "SELECT * FROM posts WHERE post_user = '{$get_post_author}' && post_status = 'published' ORDER BY post_id DESC";
             $all_posts = mysqli_query($connection, $query);
 
             while ($row = mysqli_fetch_assoc($all_posts)) {
                 $post_title = $row['post_title'];
-                $post_author = $row['post_author'];
+                $post_author = $row['post_user'];
                 $post_date = $row['post_date'];
                 $post_image = $row['post_image'];
                 $post_content = $row['post_content'];

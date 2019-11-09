@@ -3,7 +3,6 @@
         <label for="cat-title">Edit Category </label>
 
         <?php
-
         if (isset($_GET['edit'])) {
             $cat_id = $_GET['edit'];
 
@@ -24,10 +23,11 @@
         <?php
         //--------------------------------Update Query-----------------------------//
         if (isset($_POST['update_category'])) {
-            $get_cat_title = $_POST['cat_title'];
+            $get_cat_title = escape($_POST['cat_title']);
             $query = "UPDATE categories SET cat_title = '{$get_cat_title}' WHERE cat_id = {$cat_id} ";
             $update_query = mysqli_query($connection, $query);
             header("Location: categories.php");
+
             if (!$update_query) {
                 die("Query Failed" . mysqli_error($connection));
             }
