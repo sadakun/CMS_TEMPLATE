@@ -1,65 +1,5 @@
 <?php include "includes/admin_header.php"; ?>
 
-<?php
-if (isset($_SESSION['username'])) {
-    $username = $_SESSION['username'];
-
-    $query = "SELECT * FROM users WHERE username = '{$username}' ";
-    $select_user_profile_query = mysqli_query($connection, $query);
-    while ($row = mysqli_fetch_array($select_user_profile_query)) {
-
-        $user_id        = $row['user_id'];
-        $username       = $row['username'];
-        $user_password  = $row['user_password'];
-        $user_firstname = $row['user_firstname'];
-        $user_lastname  = $row['user_lastname'];
-        $user_email     = $row['user_email'];
-        $user_image     = $row['user_image'];
-    }
-}
-?>
-
-<?php
-if (isset($_POST['edit_user'])) {
-
-    $user_firstname = $_POST['user_firstname'];
-    $user_lastname  = $_POST['user_lastname'];
-    $username       = $_POST['username'];
-    $user_email     = $_POST['user_email'];
-    $user_password  = $_POST['user_password'];
-
-    $query = "SELECT randSalt FROM users";
-    $select_randsalt_query = mysqli_query($connection, $query);
-    confirmQuery($select_randsalt_query);
-
-    $row = mysqli_fetch_array($select_randsalt_query);
-    $salt = $row['randSalt'];
-    $hashed_password = crypt($user_password, $salt);
-
-
-    $query  = "UPDATE users SET ";
-    $query .= "user_firstname = '{$user_firstname}', ";
-    $query .= "user_lastname = '{$user_lastname}', ";
-    $query .= "username = '{$username}', ";
-    $query .= "user_email = '{$user_email}', ";
-    $query .= "user_password = '{$hashed_password}' ";
-    $query .= "WHERE username = '{$username}' ";
-
-    $edit_user_query = mysqli_query($connection, $query);
-    confirmQuery($edit_user_query);
-
-    echo "User Updated:" . " " . "<a href='users.php'>View Users</a>";
-
-
-
-    // Post reques to update user end
-}
-//  else { // If the user id is not present in the URL we redirect to the home page
-//     header("Location: index.php");
-// }
-?>
-
-
 
 <div id="wrapper">
     <?php include "includes/admin_navigation.php"; ?>
@@ -74,7 +14,71 @@ if (isset($_POST['edit_user'])) {
                         Welcome to Admin
                         <small><?php echo $_SESSION['username']; ?></small>
                     </h1>
+                    <?php
+                    if (isset($_SESSION['username'])) {
+                        $get_user_name = $_SESSION['username'];
+                        $get_firstname = $_SESSION['firstname'];
+                        $get_lastname = $_SESSION['lastname'];
 
+                        $query = "SELECT * FROM users WHERE username = '{$get_user_name}' ";
+                        $select_user_profile_query = mysqli_query($connection, $query);
+                        while ($row = mysqli_fetch_array($select_user_profile_query)) {
+                            $user_id        = $row['user_id'];
+                            $username       = $row['username'];
+                            $user_password  = $row['user_password'];
+                            $user_firstname = $row['user_firstname'];
+                            $user_lastname  = $row['user_lastname'];
+                            $user_email     = $row['user_email'];
+                            $user_image     = $row['user_image'];
+                        }
+
+                        ?>
+
+                    <?php
+                        if (isset($_POST['edit_user'])) {
+                            $user_firstname1 = escape($_POST['user_firstname']);
+                            $user_lastname1  = escape($_POST['user_lastname']);
+                            $username1       = escape($_POST['username']);
+                            $user_email     = escape($_POST['user_email']);
+                            $user_password  = escape($_POST['user_password']);
+
+                            $query_password = "SELECT user_password from users where username = '{$get_user_name}'";
+                            $get_user_query = mysqli_query($connection, $query_password);
+                            confirmQuery($get_user_query);
+
+                            $row = mysqli_fetch_array($get_user_query);
+                            $db_user_password = $row['user_password'];
+
+
+                            if (!empty($user_password)) {
+                                if ($db_user_password != $user_password) {
+                                    $hashed_password = password_hash($user_password, PASSWORD_BCRYPT, array('cost' => 12));
+                                    $user_password = $hashed_password;
+                                }
+                            } else {
+                                $db = $db_user_password;
+                                $hashed_password = password_hash($db, PASSWORD_BCRYPT, array('cost' => 12));
+                                $user_password = $db_user_password;
+                            }
+                            $query  = "UPDATE users SET ";
+                            $query .= "user_firstname = '{$user_firstname1}', ";
+                            $query .= "user_lastname = '{$user_lastname1}', ";
+
+                            $query .= "username = '{$username1}', ";
+                            $query .= "user_email = '{$user_email}', ";
+                            $query .= "user_password = '{$user_password}' ";
+                            $query .= "WHERE username = '{$username}' ";
+
+                            $edit_user_query = mysqli_query($connection, $query);
+                            confirmQuery($edit_user_query);
+                            echo "User Updated:" . " " . "<a href='users.php'>View Users</a>";
+                            $_SESSION['username'] = $username1;
+                            $_SESSION['firstname'] = $user_firstname1;
+                            $_SESSION['lastname'] = $user_lastname1;
+                        }
+                    }
+
+                    ?>
                     <form action="" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="firstname">Firstname</label>
