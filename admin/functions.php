@@ -4,12 +4,13 @@ function redirect($location)
 {
     return header("Location: " . $location);
 }
-
+##########################################################################################
 function escape($string)
 {
     global $connection;
     return mysqli_real_escape_string($connection, trim($string));
 }
+##########################################################################################
 //----------------------------------------------------------------------------
 function confirmQuery($result)
 {
@@ -19,6 +20,7 @@ function confirmQuery($result)
     }
     return $result;
 }
+##########################################################################################
 //----------------------------------------------------------------------------
 function createComment()
 {
@@ -44,7 +46,7 @@ function createComment()
 }
 ###############################   CRUD CATEGORIES   #########################
 //--------------------------------Insert Query-----------------------------//
-function insert_categories()
+function insertCategories()
 {
     global $connection;
     if (isset($_POST['submit'])) {
@@ -52,16 +54,19 @@ function insert_categories()
         if ($cat_title == "" || empty($cat_title)) {
             echo "This field should not be empty";
         } else {
-            $query = "INSERT INTO categories(cat_title) ";
-            $query .= "VALUE ('{$cat_title}') ";
+            $statement = mysqli_prepare($connection, "INSERT INTO categories(cat_title) VALUE(?) ");
+            mysqli_stmt_bind_param($statement, 's', $cat_title);
+            mysqli_stmt_execute($statement);
 
-            $create_category_query = mysqli_query($connection, $query);
-            if (!$create_category_query) {
+
+            if (!$statement) {
                 die("Query Failed" . mysqli_error($connection));
             }
         }
+        mysqli_stmt_close($statement);
     }
 }
+##########################################################################################
 //---------------------------------Search Query------------------------------//
 function findAllCategories()
 {
@@ -81,6 +86,7 @@ function findAllCategories()
         echo "</tr>";
     }
 }
+##########################################################################################
 //----------------------------------Delete Query-----------------------------------------
 function deleteCategories()
 {
@@ -103,6 +109,7 @@ function recordCount($table)
     confirmQuery($result);
     return $result;
 }
+##########################################################################################
 //---------------------------------------------------------------------------------------
 function approve()
 {
@@ -125,6 +132,7 @@ function unApprove()
         header("Location: post_comments.php?id=" . $_GET['id'] . "");
     }
 }
+##########################################################################################
 //----------------------------------------------------------------------------
 function deleteComment()
 {
@@ -136,8 +144,8 @@ function deleteComment()
         header("Location: post_comments.php?id=" . $_GET['id'] . "");
     }
 }
-
-function user_online()
+##########################################################################################
+function userOnline()
 {
 
     if (isset($_GET['onlineusers'])) {
@@ -165,7 +173,8 @@ function user_online()
         }
     }
 }
-user_online();
+userOnline();
+##########################################################################################
 //----------------------------------------------------------------------------
 function checkStatus($table, $column, $status)
 {
@@ -175,8 +184,8 @@ function checkStatus($table, $column, $status)
 
     return mysqli_num_rows($result);
 }
-
-function is_admin($username = '')
+##########################################################################################
+function isAdmin($username = '')
 {
     global $connection;
     $query = "SELECT user_role FROM users WHERE username = '$username' ";
@@ -190,6 +199,7 @@ function is_admin($username = '')
         return false;
     }
 }
+##########################################################################################
 function usernameExist($username)
 {
     global $connection;
@@ -203,6 +213,7 @@ function usernameExist($username)
         return false;
     }
 }
+##########################################################################################
 function emailExist($email)
 {
     global $connection;
@@ -216,6 +227,7 @@ function emailExist($email)
         return false;
     }
 }
+##########################################################################################
 function registerUser($username, $email, $password)
 {
     global $connection;
@@ -237,6 +249,7 @@ function registerUser($username, $email, $password)
     $register_user_query = mysqli_query($connection, $query);
     confirmQuery(register_user_query);
 }
+##########################################################################################
 function loginUser($username, $password)
 {
     global $connection;
@@ -259,13 +272,6 @@ function loginUser($username, $password)
         $db_user_lastname = $row['user_lastname'];
         $db_user_role = $row['user_role'];
     }
-    ######################--old encrypt password--##########################
-    // $password = crypt($password, $db_user_password);
-
-    // if ($username !== $db_username && $password !== $db_user_password) {
-    //     header("Location: ../index.php");
-    // } else if ($username == $db_username && $password == $db_user_password) {
-    ########################################################################
 
     if (password_verify($password, $db_user_password)) {
 
@@ -280,3 +286,11 @@ function loginUser($username, $password)
         redirect("/cms/index.php");
     }
 }
+
+######################--old encrypt password--##########################
+// $password = crypt($password, $db_user_password);
+
+// if ($username !== $db_username && $password !== $db_user_password) {
+//     header("Location: ../index.php");
+// } else if ($username == $db_username && $password == $db_user_password) {
+########################################################################

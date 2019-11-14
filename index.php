@@ -26,38 +26,39 @@
             } else {
                 $page_1 = ($page * $per_page) - $per_page;
             }
-
-            if (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'admin') {
-                $post_query_count = "SELECT * FROM posts";
-            } else {
-                $post_query_count = "SELECT * FROM posts WHERE post_status = 'published'";
-            }
-
-            // $post_query_count = "SELECT * FROM posts WHERE post_status = 'published'";
+            // untuk mengecek apakah data ada atau tidak
+            $post_query_count = " SELECT * FROM posts";
             $find_count = mysqli_query($connection, $post_query_count);
-            $count = mysqli_num_rows($find_count);
-
-            if ($count < 1) {
+            $counts = mysqli_num_rows($find_count);
+            if ($counts < 1) {
                 echo "<h1 class='text-center'><br><br><br><br> NO POSTS AVAILABLE, <br> Sorry :(</h1>";
             } else {
 
+                if (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'admin') {
+                    $query = " SELECT * from posts limit $page_1, $per_page";
+                    $data_post = "SELECT * from posts ";
+                    $find_count = mysqli_query($connection, $data_post);
+                    $count = mysqli_num_rows($find_count);
+                } else {
+                    $query = " SELECT * from posts where post_status = 'published' limit $page_1, $per_page ";
+                    $data_post = "SELECT * from posts where post_status = 'published' ";
+                    $find_count = mysqli_query($connection, $data_post);
+                    $count = mysqli_num_rows($find_count);
+                }
+                // Digunakan untuk menentukan banyak halaman dari jumlah data yang ada
                 $count = ceil($count / $per_page);
 
+                $select_all_posts_query = mysqli_query($connection, $query);
 
-                $query = "SELECT * FROM posts ORDER BY post_id DESC LIMIT $page_1, $per_page";
-                $all_posts = mysqli_query($connection, $query);
-
-                while ($row = mysqli_fetch_assoc($all_posts)) {
+                while ($row = mysqli_fetch_assoc($select_all_posts_query)) {
                     $post_id        = $row['post_id'];
                     $post_title     = $row['post_title'];
                     $post_author    = $row['post_user'];
                     $post_date      = $row['post_date'];
-                    $post_image     = $row['post_image'];
-                    $post_content   = substr($row['post_content'], 0, 100);
-                    $post_status    = $row['post_status'];
                     $post_tag       = $row['post_tag'];
-
-
+                    $post_image     = $row['post_image'];
+                    $post_content   = substr($row['post_content'], 0, 100);  // memnuat jumlah karakter content
+                    $post_status    = $row['post_status'];
                     ?>
                     <h1 class="page-header">
                         Samuel's CMS Site
@@ -66,7 +67,7 @@
 
                     <!-- First Blog Post -->
                     <h2>
-                        <a href="post.php?p_id=<?php echo $post_id; ?>"> <?php echo $post_title; ?></a>
+                        <a href="post/<?php echo $post_id; ?>"> <?php echo $post_title; ?></a>
                     </h2>
 
                     <p class="lead">

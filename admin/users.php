@@ -1,6 +1,6 @@
 <?php include "includes/admin_header.php"; ?>
 <?php
-if (!is_admin($_SESSION['username'])) {
+if (!isAdmin($_SESSION['username'])) {
     header("Location: index.php");
 }
 ?>

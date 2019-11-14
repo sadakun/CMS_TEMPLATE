@@ -1,4 +1,5 @@
 <?php include "includes/db.php"; ?>
+<?php include "admin/functions.php"; ?>
 
 <!-- Header -->
 <?php include "includes/header.php"; ?>
@@ -18,54 +19,60 @@
             if (isset($_GET['category'])) {
                 $post_category_id = $_GET['category'];
 
-                if (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'admin') {
-                    $query = "SELECT * FROM posts WHERE post_category_id = $post_category_id";
+                if (isAdmin($_SESSION['username'])) {
+                    $first_statement = mysqli_prepare($connection, "SELECT post_id, post_title, post_author, post_date,post_image, post_tag, post_content FROM posts WHERE post_category_id = ? ");
+                    // confirmQuery($first_statement);
                 } else {
-                    $query = "SELECT * FROM posts WHERE post_category_id = $post_category_id AND post_status = 'published' ";
+                    $second_statement = mysqli_prepare($connection, "SELECT post_id, post_title, post_author, post_date,post_image, post_tag, post_content FROM posts WHERE post_category_id = ? AND post_status = ? ");
+                    // confirmQuery($second_statement);
+                    $published = 'published';
                 }
 
-                // $query = "SELECT * FROM posts WHERE post_category_id = $post_category_id AND post_status = 'published' ";
-                $all_posts = mysqli_query($connection, $query);
+                if (isset($first_statement)) {
+                    mysqli_stmt_bind_param($first_statement, "i", $post_category_id);
+                    mysqli_stmt_execute($first_statement);
+                    mysqli_stmt_bind_result($first_statement, $post_id, $post_title, $post_author, $post_date, $post_image, $post_tag, $post_content);
+                    $stmt = $first_statement;
+                    mysqli_stmt_store_result($first_statement);
+                } else {
+                    mysqli_stmt_bind_param($second_statement, "is", $post_category_id, $published);
+                    mysqli_stmt_execute($second_statement);
+                    mysqli_stmt_bind_result($second_statement, $post_id, $post_title, $post_author, $post_date, $post_image, $post_tag, $post_content);
+                    $stmt = $second_statement;
+                    mysqli_stmt_store_result($second_statement);
+                }
 
-                if (mysqli_num_rows($all_posts) < 1) {
+                if (mysqli_stmt_num_rows($stmt) === 0) {
                     echo "<h1 class='text-center'><br><br><br><br> NO POSTS AVAILABLE, <br> Sorry :(</h1>";
-                } else {
-
-
-                    while ($row = mysqli_fetch_assoc($all_posts)) {
-                        $post_id        = $row['post_id'];
-                        $post_title     = $row['post_title'];
-                        $post_author    = $row['post_user'];
-                        $post_date      = $row['post_date'];
-                        $post_image     = $row['post_image'];
-                        $post_content   = substr($row['post_content'], 0, 100);
-                        $post_tag       = $row['post_tag'];
-                        // $post_comment_count = $row['post_comment_count'];
-                        // $post_status = $row['post_status'];
-                        ?>
-
-                        <h1 class="page-header">
-                            Learning Vue.js
-                            <small>Secondary Text</small>
-                        </h1>
-
-                        <!-- First Blog Post -->
-                        <h2>
-                            <a href="post.php?p_id=<?php echo $post_id; ?>"><?php echo $post_title; ?></a>
-                        </h2>
-                        <p class="lead">
-                            by <a href="author_posts.php?author=<?php echo $post_author; ?>&p_id=<?php echo $post_id; ?>"><?php echo $post_author; ?></a>
-                        </p>
-                        <p><span class="glyphicon glyphicon-time"></span> Posted on <?php echo $post_date; ?></p>
-                        <hr>
-                        <img class="img-responsive" src="images/<?php echo $post_image; ?>" alt="">
-                        <hr>
-                        <p><?php echo $post_content; ?></p>
-                        <a class="btn btn-primary" href="#">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
-
-                        <hr>
-            <?php }
                 }
+
+
+                while (mysqli_stmt_fetch($stmt)) :
+
+                    ?>
+
+                    <h1 class="page-header">
+                        Learning Vue.js
+                        <small>Secondary Text</small>
+                    </h1>
+
+                    <!-- First Blog Post -->
+                    <h2>
+                        <a href="post.php?p_id=<?php echo $post_id; ?>"><?php echo $post_title; ?></a>
+                    </h2>
+                    <p class="lead">
+                        by <a href="author_posts.php?author=<?php echo $post_author; ?>&p_id=<?php echo $post_id; ?>"><?php echo $post_author; ?></a>
+                    </p>
+                    <p><span class="glyphicon glyphicon-time"></span> Posted on <?php echo $post_date; ?></p>
+                    <hr>
+                    <img class="img-responsive" src="images/<?php echo $post_image; ?>" alt="">
+                    <hr>
+                    <p><?php echo $post_content; ?></p>
+                    <a class="btn btn-primary" href="#">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+
+                    <hr>
+            <?php endwhile;
+                mysqli_stmt_close($stmt);
             } else {
                 header("Location: index.php");
             } ?>

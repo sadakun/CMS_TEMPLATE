@@ -11,15 +11,15 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.php">Sadakun CMS</a>
+            <a class="navbar-brand" href="/cms">Sadakun CMS</a>
         </div>
 
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-                <li class="<?php echo $home_class; ?>">
-                    <a href="index.php">Home</a>
+                <li>
+                    <a href="/cms">Home</a>
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Category<b class="caret"></b></a>
@@ -39,7 +39,6 @@
                             $page_name = basename($_SERVER['PHP_SELF']);
                             $registration = 'registration.php';
                             $contact = 'contact.php';
-                            $home = 'index.php';
 
                             if (isset($_GET['category']) &&  $_GET['category'] == $cat_id) {
                                 $category_class = 'active';
@@ -47,10 +46,8 @@
                                 $registration_class = 'active';
                             } else if ($page_name == $contact) {
                                 $contact_class = 'active';
-                            } else if ($page_name == $home) {
-                                $home_class = 'active';
                             }
-                            echo "<li class='$category_class'><a href='category.php?category=$cat_id'>{$cat_title}</a></li>";
+                            echo "<li class='$category_class'><a href='/cms/category/$cat_id'>{$cat_title}</a></li>";
                         }
                         ?>
                     </ul>
@@ -58,10 +55,10 @@
 
                 </li>
                 <li class="<?php echo $registration_class; ?>">
-                    <a href="registration.php">Registration</a>
+                    <a href="/cms/registration">Registration</a>
                 </li>
                 <li class="<?php echo $contact_class; ?>">
-                    <a href="contact.php">Contact</a>
+                    <a href="/cms/contact">Contact</a>
                 </li>
                 <li>
                     <a href="#">About</a>
@@ -76,7 +73,7 @@
                 if (isset($_SESSION['user_role'])) {
                     if (isset($_GET['p_id'])) {
                         $get_post_id = $_GET['p_id'];
-                        echo "<li><a href='admin/posts.php?source=edit_post&p_id={$get_post_id}'>Edit Post</a></li>";
+                        echo "<li><a href='/cms/admin/posts.php?source=edit_post&p_id={$get_post_id}'>Edit Post</a></li>";
                     }
                 }
                 ?>
