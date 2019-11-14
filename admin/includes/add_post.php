@@ -91,7 +91,8 @@ if (isset($_POST['create_post'])) {
     </div>
 
     <div class="form-group">
-        <input type="submit" class="btn btn-primary" name="create_post" value="Publish Post">
+        <a href="posts.php" class="btn btn-warning">Back</a>
+        <input type="submit" class="btn btn-success" name="create_post" value="Publish Post">
     </div>
 
 </form>

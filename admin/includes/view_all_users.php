@@ -38,7 +38,7 @@ if (isset($_POST['checkBoxArray'])) {
 
             <div class="col-xs-4">
                 <input type="submit" name="submit" class="btn btn-success" value="Apply">
-                <a class="btn btn-primary" href="users.php?source=add_user">Add New</a>
+                <a class="btn btn-primary" href="users.php?source=add_user">Add new</a>
             </div>
             <thead>
                 <tr>
@@ -53,9 +53,6 @@ if (isset($_POST['checkBoxArray'])) {
                     <th>Change Role</th>
                     <th>Edit</th>
                     <th>Delete</th>
-
-
-
                 </tr>
             </thead>
             <tbody>
@@ -89,14 +86,17 @@ if (isset($_POST['checkBoxArray'])) {
 
                     echo "<td><a href='users.php?change_to_admin={$user_id}'>Change to Admin</a></td>";
                     echo "<td><a href='users.php?change_to_subscriber={$user_id}'>Change to Subscriber</a></td>";
-                    echo "<td><a href='users.php?source=edit_user&edit_user={$user_id}'>Edit</a></td>";
-                    echo "<td><a onClick=\"javascript: return confirm('Are you sure want to delete this user?'); \" href='users.php?delete={$user_id}'>Delete</a></td>";
+                    echo "<td><a href='users.php?source=edit_user&edit_user={$user_id}'><i class='fa fa-edit'>edit</i></a></td>";
+                    echo "<td><a rel='$user_id' href='javascript:void(0)' data-toggle='modal' class='delete_link'><i class='fa fa-trash'>delete</i></a></td>";
+
+                    // echo "<td><a onClick=\"javascript: return confirm('Are you sure want to delete this user?'); \" href='users.php?delete={$user_id}'>Delete</a></td>";
 
                     echo "</tr>";
                 }
                 ?>
             </tbody>
         </table>
+
     </form>
     <?php
     if (isset($_GET['change_to_admin'])) {
@@ -125,3 +125,18 @@ if (isset($_POST['checkBoxArray'])) {
         }
     }
     ?>
+
+    <script>
+        $(document).ready(function() {
+            $(".delete_link").on('click', function() {
+                // $(".delete_link").on('click', function() {
+                var id = $(this).attr("rel");
+                var delete_url = "users.php?delete=" + id + " ";
+                // alert(delete_url);
+
+                $(".modal_delete_link").attr("href", delete_url);
+                $("#myModal").modal('show');
+            });
+
+        });
+    </script>

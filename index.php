@@ -14,7 +14,7 @@
         <!-- Blog Entries Column -->
         <div class="col-md-8">
             <?php
-            $per_page = 2;
+            $per_page = 3;
             if (isset($_GET['page'])) {
                 $page = $_GET['page'];
             } else {
@@ -27,31 +27,38 @@
                 $page_1 = ($page * $per_page) - $per_page;
             }
 
-            $post_query_count = "SELECT * FROM posts ";
+            if (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'admin') {
+                $post_query_count = "SELECT * FROM posts";
+            } else {
+                $post_query_count = "SELECT * FROM posts WHERE post_status = 'published'";
+            }
+
+            // $post_query_count = "SELECT * FROM posts WHERE post_status = 'published'";
             $find_count = mysqli_query($connection, $post_query_count);
             $count = mysqli_num_rows($find_count);
 
-            $count = ceil($count / $per_page);
+            if ($count < 1) {
+                echo "<h1 class='text-center'><br><br><br><br> NO POSTS AVAILABLE, <br> Sorry :(</h1>";
+            } else {
+
+                $count = ceil($count / $per_page);
 
 
-            $query = "SELECT * FROM posts WHERE post_status = 'published' ORDER BY post_id DESC LIMIT $page_1, $per_page";
-            $all_posts = mysqli_query($connection, $query);
+                $query = "SELECT * FROM posts ORDER BY post_id DESC LIMIT $page_1, $per_page";
+                $all_posts = mysqli_query($connection, $query);
 
-            while ($row = mysqli_fetch_assoc($all_posts)) {
-                $post_id        = $row['post_id'];
-                $post_title     = $row['post_title'];
-                $post_author    = $row['post_user'];
-                $post_date      = $row['post_date'];
-                $post_image     = $row['post_image'];
-                $post_content   = substr($row['post_content'], 0, 100);
-                $post_status    = $row['post_status'];
-                $post_tag       = $row['post_tag'];
+                while ($row = mysqli_fetch_assoc($all_posts)) {
+                    $post_id        = $row['post_id'];
+                    $post_title     = $row['post_title'];
+                    $post_author    = $row['post_user'];
+                    $post_date      = $row['post_date'];
+                    $post_image     = $row['post_image'];
+                    $post_content   = substr($row['post_content'], 0, 100);
+                    $post_status    = $row['post_status'];
+                    $post_tag       = $row['post_tag'];
 
-                if ($post_status !== 'published') {
-                    echo "<h1 class='text-center'> NO POST </h1>";
-                } else {
+
                     ?>
-
                     <h1 class="page-header">
                         Samuel's CMS Site
                         <small>students only</small>
@@ -80,18 +87,19 @@
                     <p><?php echo $post_content; ?></p>
                     <a class="btn btn-primary" href="post.php?p_id=<?php echo $post_id; ?>">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
                     <hr>
-            <?php }
+            <?php
+                }
             } ?>
 
             <!-- Pager -->
-            <ul class="pager">
+            <!-- <ul class="pager">
                 <li class="previous">
                     <a href="#">&larr; Older</a>
                 </li>
                 <li class="next">
                     <a href="#">Newer &rarr;</a>
                 </li>
-            </ul>
+            </ul> -->
 
         </div>
 

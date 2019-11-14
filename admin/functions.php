@@ -1,11 +1,16 @@
 <?php
 
+function redirect($location)
+{
+    return header("Location: " . $location);
+}
+
 function escape($string)
 {
     global $connection;
     return mysqli_real_escape_string($connection, trim($string));
 }
-
+//----------------------------------------------------------------------------
 function confirmQuery($result)
 {
     global $connection;
@@ -14,6 +19,30 @@ function confirmQuery($result)
     }
     return $result;
 }
+//----------------------------------------------------------------------------
+function createComment()
+{
+    global $connection;
+    if (isset($_POST['create_comment'])) {
+        $get_post_id = $_GET['p_id'];
+        $comment_author = $_POST['comment_author'];
+        $comment_email = $_POST['comment_email'];
+        $comment_content = mysqli_real_escape_string($connection, $_POST['comment_content']);
+
+        if (!empty($comment_author) && !empty($comment_email) && !empty($comment_content)) {
+            $query = "INSERT INTO comments (comment_post_id, comment_author, comment_email, comment_content, comment_status, comment_date)";
+            $query .= "VALUES ($get_post_id, '{$comment_author}', '{$comment_email}', '{$comment_content}', 'Unapproved', now())";
+            $create_comment_query = mysqli_query($connection, $query);
+
+            if (!$create_comment_query) {
+                die("QUERY FAILED" . mysqli_error($connection));
+            }
+        } else {
+            echo "<script>alert('Field cannot be empty')</script>";
+        }
+    }
+}
+###############################   CRUD CATEGORIES   #########################
 //--------------------------------Insert Query-----------------------------//
 function insert_categories()
 {
@@ -33,7 +62,7 @@ function insert_categories()
         }
     }
 }
-
+//---------------------------------Search Query------------------------------//
 function findAllCategories()
 {
     global $connection;
@@ -52,7 +81,7 @@ function findAllCategories()
         echo "</tr>";
     }
 }
-
+//----------------------------------Delete Query-----------------------------------------
 function deleteCategories()
 {
     global $connection;
@@ -61,6 +90,50 @@ function deleteCategories()
         $query = "DELETE FROM categories WHERE cat_id = {$get_cat_id}";
         $delete_query = mysqli_query($connection, $query);
         header("Location: categories.php");
+    }
+}
+##########################################################################################
+//----------------------------------Dashboard Count Data-------------------------------
+function recordCount($table)
+{
+    global $connection;
+    $query = "SELECT * FROM " . $table;
+    $select_all_post = mysqli_query($connection, $query);
+    $result = mysqli_num_rows($select_all_post);
+    confirmQuery($result);
+    return $result;
+}
+//---------------------------------------------------------------------------------------
+function approve()
+{
+    global $connection;
+    if (isset($_GET['approve'])) {
+        $get_comment_id = escape($_GET['approve']);
+        $query = "UPDATE comments SET comment_status = 'approved' WHERE comment_id = $get_comment_id ";
+        $approve_comment_query = mysqli_query($connection, $query);
+        header("Location: post_comments.php?id=" . $_GET['id'] . "");
+    }
+}
+//---------------------------------------------------------------------------------------
+function unApprove()
+{
+    global $connection;
+    if (isset($_GET['unapprove'])) {
+        $get_comment_id = escape($_GET['unapprove']);
+        $query = "UPDATE comments SET comment_status = 'unapproved' WHERE comment_id = $get_comment_id ";
+        $unapprove_comment_query = mysqli_query($connection, $query);
+        header("Location: post_comments.php?id=" . $_GET['id'] . "");
+    }
+}
+//----------------------------------------------------------------------------
+function deleteComment()
+{
+    global $connection;
+    if (isset($_GET['delete'])) {
+        $get_comment_id = escape($_GET['delete']);
+        $query = "DELETE FROM comments WHERE comment_id = {$get_comment_id}";
+        $delete_query = mysqli_query($connection, $query);
+        header("Location: post_comments.php?id=" . $_GET['id'] . "");
     }
 }
 
@@ -93,3 +166,117 @@ function user_online()
     }
 }
 user_online();
+//----------------------------------------------------------------------------
+function checkStatus($table, $column, $status)
+{
+    global $connection;
+    $query = "SELECT * FROM $table WHERE $column = '$status' ";
+    $result = mysqli_query($connection, $query);
+
+    return mysqli_num_rows($result);
+}
+
+function is_admin($username = '')
+{
+    global $connection;
+    $query = "SELECT user_role FROM users WHERE username = '$username' ";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+
+    $row = mysqli_fetch_array($result);
+    if ($row['user_role'] == 'admin') {
+        return true;
+    } else {
+        return false;
+    }
+}
+function usernameExist($username)
+{
+    global $connection;
+    $query = "SELECT username FROM users WHERE username = '$username' ";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+
+    if (mysqli_num_rows($result) > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+function emailExist($email)
+{
+    global $connection;
+    $query = "SELECT user_email FROM users WHERE user_email = '$email' ";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+
+    if (mysqli_num_rows($result) > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+function registerUser($username, $email, $password)
+{
+    global $connection;
+
+
+    // if (usernameExist($username)) { }
+
+
+    // if (!empty($username) && !empty($email) && !empty($password)) {
+
+    $username =  mysqli_escape_string($connection, $username);
+    $password =  mysqli_escape_string($connection, $password);
+    $email    =  mysqli_escape_string($connection, $email);
+
+    $password = password_hash($password, PASSWORD_BCRYPT, array('cost' => 12));     /// NEW WAY ENCRYPT PASSWORD
+
+    $query = "INSERT INTO users(username, user_email,  user_password, user_role) ";
+    $query .= "VALUES('{$username}', '{$email}', '{$password}', 'subscriber' ) ";
+    $register_user_query = mysqli_query($connection, $query);
+    confirmQuery(register_user_query);
+}
+function loginUser($username, $password)
+{
+    global $connection;
+    $username = trim($username);
+    $password = trim($password);
+
+    $username = mysqli_escape_string($connection, $username);
+    $password = mysqli_escape_string($connection, $password);
+
+    $query = "SELECT * FROM users WHERE username = '{$username}' ";
+    $select_user_query = mysqli_query($connection, $query);
+    confirmQuery($select_user_query);
+
+
+    while ($row = mysqli_fetch_array($select_user_query)) {
+        $db_user_id = $row['user_id'];
+        $db_username = $row['username'];
+        $db_user_password = $row['user_password'];
+        $db_user_firstname = $row['user_firstname'];
+        $db_user_lastname = $row['user_lastname'];
+        $db_user_role = $row['user_role'];
+    }
+    ######################--old encrypt password--##########################
+    // $password = crypt($password, $db_user_password);
+
+    // if ($username !== $db_username && $password !== $db_user_password) {
+    //     header("Location: ../index.php");
+    // } else if ($username == $db_username && $password == $db_user_password) {
+    ########################################################################
+
+    if (password_verify($password, $db_user_password)) {
+
+        $_SESSION['username']   = $db_username;
+        $_SESSION['firstname']  = $db_user_firstname;
+        $_SESSION['lastname']   = $db_user_lastname;
+        $_SESSION['user_role']  = $db_user_role;
+
+        redirect("/cms/admin");
+    } else {
+
+        redirect("/cms/index.php");
+    }
+}

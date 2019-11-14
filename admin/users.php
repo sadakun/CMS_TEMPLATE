@@ -1,5 +1,9 @@
 <?php include "includes/admin_header.php"; ?>
-
+<?php
+if (!is_admin($_SESSION['username'])) {
+    header("Location: index.php");
+}
+?>
 <div id="wrapper">
 
     <!-- Navigation -->
@@ -34,8 +38,6 @@
                             include "includes/view_all_users.php";
                     }
                     ?>
-
-
                 </div>
             </div>
             <!-- /.row -->

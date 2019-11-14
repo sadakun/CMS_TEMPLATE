@@ -125,26 +125,9 @@
                             <a class="btn btn-primary" href="posts.php">back to posts</a>
                         </form>
                         <?php
-                        if (isset($_GET['approve'])) {
-                            $get_comment_id = escape($_GET['approve']);
-                            $query = "UPDATE comments SET comment_status = 'approved' WHERE comment_id = $get_comment_id ";
-                            $approve_comment_query = mysqli_query($connection, $query);
-                            header("Location: post_comments.php?id=" . $_GET['id'] . "");
-                        }
-
-                        if (isset($_GET['unapprove'])) {
-                            $get_comment_id = escape($_GET['unapprove']);
-                            $query = "UPDATE comments SET comment_status = 'unapproved' WHERE comment_id = $get_comment_id ";
-                            $unapprove_comment_query = mysqli_query($connection, $query);
-                            header("Location: post_comments.php?id=" . $_GET['id'] . "");
-                        }
-
-                        if (isset($_GET['delete'])) {
-                            $get_comment_id = escape($_GET['delete']);
-                            $query = "DELETE FROM comments WHERE comment_id = {$get_comment_id}";
-                            $delete_query = mysqli_query($connection, $query);
-                            header("Location: post_comments.php?id=" . $_GET['id'] . "");
-                        }
+                        approve();
+                        unApprove();
+                        deleteComment();
                         ?>
                 </div>
             </div>
