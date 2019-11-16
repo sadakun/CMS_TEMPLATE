@@ -1,8 +1,23 @@
+<?php
+
+checkIfUserIsLoginAndRedirect('/cms/admin');
+
+if (ifItIsMethod('post')) {
+
+    if (isset($_POST['username']) && isset($_POST['password'])) {
+
+        loginUser($_POST['username'], $_POST['password']);
+    } else {
+
+
+        redirect('index.php');
+    }
+}
+
+?>
+
 <!-- Blog sidebar widget coloumn-->
 <div class="col-md-4">
-
-
-
     <!-- Blog Search Well -->
     <div class="well">
         <h4>Blog Search</h4>
@@ -30,7 +45,7 @@
         <?php else : ?>
             <h4>Login</h4>
             <!-- search form -->
-            <form action="includes/login.php" method="post">
+            <form method="post">
 
                 <div class="form-group">
                     <input autocomplete="off" name="username" type="text" class="form-control" placeholder="Enter Username">
@@ -43,6 +58,9 @@
                     <span class="input-group-btn">
                         <button class="btn btn-primary" name="login" type="submit">Submit</button>
                     </span>
+                </div>
+                <div class="form-group">
+                    <a href="forgot_password.php?forgot=<?php echo uniqid(true); ?>">Forgot Password?</a>
                 </div>
             </form>
         <?php endif; ?>

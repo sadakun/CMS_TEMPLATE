@@ -3,6 +3,7 @@
 function redirect($location)
 {
     return header("Location: " . $location);
+    exit;
 }
 ##########################################################################################
 function escape($string)
@@ -12,6 +13,29 @@ function escape($string)
 }
 ##########################################################################################
 //----------------------------------------------------------------------------
+function ifItIsMethod($method = null)
+{
+    if ($_SERVER['REQUEST_METHOD'] == strtoupper($method)) {
+        return true;
+    }
+    return false;
+}
+
+function checkIfUserIsLoginAndRedirect($redirectLocation = null)
+{
+    if (isLogin()) {
+        redirect($redirectLocation);
+    }
+}
+
+function isLogin()
+{
+    if (isset($_SESSION['user_role'])) {
+        return true;
+    }
+    return false;
+}
+
 function confirmQuery($result)
 {
     global $connection;
@@ -185,7 +209,7 @@ function checkStatus($table, $column, $status)
     return mysqli_num_rows($result);
 }
 ##########################################################################################
-function isAdmin($username = '')
+function isAdmin($username)
 {
     global $connection;
     $query = "SELECT user_role FROM users WHERE username = '$username' ";
@@ -232,12 +256,6 @@ function registerUser($username, $email, $password)
 {
     global $connection;
 
-
-    // if (usernameExist($username)) { }
-
-
-    // if (!empty($username) && !empty($email) && !empty($password)) {
-
     $username =  mysqli_escape_string($connection, $username);
     $password =  mysqli_escape_string($connection, $password);
     $email    =  mysqli_escape_string($connection, $email);
@@ -247,7 +265,7 @@ function registerUser($username, $email, $password)
     $query = "INSERT INTO users(username, user_email,  user_password, user_role) ";
     $query .= "VALUES('{$username}', '{$email}', '{$password}', 'subscriber' ) ";
     $register_user_query = mysqli_query($connection, $query);
-    confirmQuery(register_user_query);
+    confirmQuery($register_user_query);
 }
 ##########################################################################################
 function loginUser($username, $password)
@@ -271,20 +289,23 @@ function loginUser($username, $password)
         $db_user_firstname = $row['user_firstname'];
         $db_user_lastname = $row['user_lastname'];
         $db_user_role = $row['user_role'];
+
+
+        if (password_verify($password, $db_user_password)) {
+
+            $_SESSION['username']   = $db_username;
+            $_SESSION['firstname']  = $db_user_firstname;
+            $_SESSION['lastname']   = $db_user_lastname;
+            $_SESSION['user_role']  = $db_user_role;
+
+            redirect("/cms/admin");
+        } else {
+
+            return false;
+        }
     }
 
-    if (password_verify($password, $db_user_password)) {
-
-        $_SESSION['username']   = $db_username;
-        $_SESSION['firstname']  = $db_user_firstname;
-        $_SESSION['lastname']   = $db_user_lastname;
-        $_SESSION['user_role']  = $db_user_role;
-
-        redirect("/cms/admin");
-    } else {
-
-        redirect("/cms/index.php");
-    }
+    return true;
 }
 
 ######################--old encrypt password--##########################

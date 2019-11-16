@@ -58,9 +58,9 @@ if (isset($_GET['edit_user'])) {
 
         $edit_user_query = mysqli_query($connection, $query);
         confirmQuery($edit_user_query);
-        $_SESSION['username'] = $username1;
-        $_SESSION['firstname'] = $user_firstname1;
-        $_SESSION['lastname'] = $user_lastname1;
+        // $_SESSION['username'] = $username1;
+        // $_SESSION['firstname'] = $user_firstname1;
+        // $_SESSION['lastname'] = $user_lastname1;
         echo "User Updated:" . " " . "<a href='users.php'>View Users</a>";
     }
 } else {

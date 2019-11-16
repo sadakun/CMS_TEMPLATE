@@ -1,4 +1,3 @@
-<?php session_start(); ?>
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
 
@@ -18,6 +17,19 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                <?php if (isLogin()) : ?>
+                    <li>
+                        <a href="/cms/admin">Admin</a>
+                    </li>
+                    <li>
+                        <a href="/cms/includes/logout.php">Logout</a>
+                    </li>
+                <?php else : ?>
+                    <li class="<?php echo $login_class; ?>">
+                        <a href="/cms/login.php">Login</a>
+                    </li>
+                <?php endif; ?>
+
                 <li>
                     <a href="/cms">Home</a>
                 </li>
@@ -35,10 +47,12 @@
                             $category_class = '';
                             $registration_class = '';
                             $contact_class = '';
+                            $login_class = '';
 
                             $page_name = basename($_SERVER['PHP_SELF']);
                             $registration = 'registration.php';
                             $contact = 'contact.php';
+                            $login = 'login.php';
 
                             if (isset($_GET['category']) &&  $_GET['category'] == $cat_id) {
                                 $category_class = 'active';
@@ -46,6 +60,8 @@
                                 $registration_class = 'active';
                             } else if ($page_name == $contact) {
                                 $contact_class = 'active';
+                            } else if ($page_name == $login) {
+                                $login_class = 'active';
                             }
                             echo "<li class='$category_class'><a href='/cms/category/$cat_id'>{$cat_title}</a></li>";
                         }
@@ -64,9 +80,8 @@
                     <a href="#">About</a>
                 </li>
 
-                <li>
-                    <a href="admin">Admin</a>
-                </li>
+
+
 
 
                 <?php

@@ -1,6 +1,3 @@
-<?php include "includes/db.php"; ?>
-<?php include "admin/functions.php"; ?>
-
 <!-- Header -->
 <?php include "includes/header.php"; ?>
 
