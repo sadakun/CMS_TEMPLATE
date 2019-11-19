@@ -12,7 +12,7 @@
 if (isset($_POST['submit'])) {
 
     // use wordwrap() if lines are longer than 70 characters
-    $to   = "samueldamarkuncoro@gmail.com";
+    $to   = "sm123kuncoro@gmail.com";
     $subject   = wordwrap($_POST['subject'], 70);
     $body      = $_POST['body'];
     $header = "From: " . $_POST['email'];
@@ -32,7 +32,7 @@ if (isset($_POST['submit'])) {
         <div class="container">
             <div class="position-relative col-sm-12  col-xs-mobile-fullwidth text-center margin-ten-bottom">
                 <div class="wpd-innner-wrapper">
-                    <h1>Contact</h1><img class="wow fadeInUp" src="https://goldencupseafood.com/assets/images/separator.png" width="300" height="20">
+                    <h1>Contact</h1>
                 </div>
             </div>
             <div class="row">

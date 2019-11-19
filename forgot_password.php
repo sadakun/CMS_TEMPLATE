@@ -1,29 +1,79 @@
 <?php include "includes/header.php"; ?>
-<!-- Navigation -->
 <?php include "includes/navigation.php"; ?>
 <?php
 
-if (!ifItIsMethod('get') && !isset($_GET['forgot'])) {
+use PHPMailer\PHPMailer\PHPMailer;
+
+
+// Require FILES 
+require './vendor/autoload.php';
+
+require './classes/Config.php';
+
+
+?>
+<?php
+//Functions
+
+if (!isset($_GET['forgot'])) {
+
     redirect('index');
 }
 
 if (ifItIsMethod('post')) {
+
     if (isset($_POST['email'])) {
+
         $email = $_POST['email'];
+
         $length = 50;
+
         $token = bin2hex(openssl_random_pseudo_bytes($length));
 
         if (emailExist($email)) {
-            $stmt = mysqli_prepare($connection, "UPDATE users SET token = '{$token}' WHERE user_email = ? ");
-            mysqli_stmt_bind_param($stmt, "s", $email);
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_close($stmt);
+
+            if ($stmt = mysqli_prepare($connection, "UPDATE users SET token='{$token}' WHERE user_email=?")) {
+
+                mysqli_stmt_bind_param($stmt, "s", $email);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+
+                // Configure PHPMailer
+                // var_dump("Yes it does");
+                // exit;
+                $mail = new PHPMailer();
+                $mail->setFrom('sm123kuncoro@gmail.com', 'Samuel Kuncoro');
+                $mail->addAddress($email);
+                $mail->Subject = 'tes purposes';
+                $mail->Body = 'email body';
+                $mail->isSMTP();
+                $mail->Host = Config::SMTP_HOST;
+                $mail->SMTPAuth = true;
+                $mail->Username = Config::SMTP_USER;
+                $mail->Password = Config::SMTP_PASSWORD;
+                $mail->Port = Config::SMTP_PORT;
+                // $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->isHTML(true);
+                // $mail->CharSet = 'UTF-8';
+
+
+
+                if ($mail->send()) {
+
+                    echo "IT WAS SENT";
+                } else {
+
+                    echo "NOT SENT";
+                }
+            }
         } else {
+
             echo "RONG";
         }
     }
 }
 ?>
+
 
 
 <!-- Page Content -->
@@ -73,6 +123,11 @@ if (ifItIsMethod('post')) {
 
     <hr>
 
-    <?php include "includes/footer.php"; ?>
+</div> <!-- /.container -->
+
+
+<hr>
+
+<?php include "includes/footer.php"; ?>
 
 </div> <!-- /.container -->

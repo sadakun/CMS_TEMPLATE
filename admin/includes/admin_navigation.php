@@ -16,7 +16,7 @@
             <a href="">User Online: <span class="useronline"></span></a>
         </li>
         <li>
-            <a href="../index.php">HOME SITE</a>
+            <a href="/cms/index.php">HOME SITE</a>
         </li>
 
         <!-- <li class="dropdown">

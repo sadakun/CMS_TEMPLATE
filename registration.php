@@ -58,13 +58,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         <div class="container">
             <div class="position-relative col-sm-12  col-xs-mobile-fullwidth text-center margin-ten-bottom">
                 <div class="wpd-innner-wrapper">
-                    <h1>Register</h1><img class="wow fadeInUp" src="https://goldencupseafood.com/assets/images/separator.png" width="300" height="20">
+                    <h1>Register</h1>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-6 col-xs-offset-3">
                     <div class="form-wrap">
-                        <form role="form" action="registration.php" method="post" id="login-form" autocomplete="off">
+                        <form role="form" action="/cms/registration.php" method="post" id="login-form" autocomplete="off">
 
                             <!-- <div class="form-group">
                                 <label for="username">Firstname</label>

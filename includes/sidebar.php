@@ -60,7 +60,7 @@ if (ifItIsMethod('post')) {
                     </span>
                 </div>
                 <div class="form-group">
-                    <a href="forgot_password.php?forgot=<?php echo uniqid(true); ?>">Forgot Password?</a>
+                    <a href="/cms/forgot_password.php?forgot=<?php echo uniqid(true); ?>">Forgot Password?</a>
                 </div>
             </form>
         <?php endif; ?>
