@@ -24,12 +24,15 @@ if (isset($_POST['update_post'])) {
     $post_title         = escape($_POST['post_title']);
     $post_category_id   = escape($_POST['post_category']);
     $post_status        = escape($_POST['post_status']);
-    $post_image         = escape($_FILES['image']['name']);
-    $post_image_temp    = escape($_FILES['image']['tmp_name']);
+    $post_image         = $_FILES['image']['name'];
+    $post_image_temp    = $_FILES['image']['tmp_name'];
     $post_content       = escape($_POST['post_content']);
     $post_tag           = escape($_POST['post_tag']);
 
-    move_uploaded_file($post_image_temp, "../images/$post_image");
+    // move_uploaded_file($post_image_temp, "../images/$post_image");
+    move_uploaded_file($post_image_temp, "../images/" . $post_image);
+
+
 
     if (empty($post_image)) {
         $query = "SELECT * FROM posts WHERE post_id = $get_post_id ";
@@ -54,7 +57,7 @@ if (isset($_POST['update_post'])) {
     $update_post = mysqli_query($connection, $query);
     confirmQuery($update_post);
 
-    echo "<p class = 'bg-success'>Post Updated. <a href='../post.php?p_id={$get_post_id}'>View Post </a> or <a href='posts.php'> Edit More Post</a></p>";
+    echo "<p class = 'bg-success'>Post Updated. <a href='/cms/post/$get_post_id'>View Post </a> or <a href='posts.php'> Edit More Post</a></p>";
 }
 ?>
 

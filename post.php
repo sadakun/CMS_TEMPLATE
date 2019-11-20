@@ -32,8 +32,6 @@
                     echo "<h1 class='text-center'><br><br><br><br> NO POSTS AVAILABLE, <br> Sorry :(</h1>";
                 } else {
 
-
-
                     while ($row = mysqli_fetch_assoc($all_posts)) {
                         $post_title = $row['post_title'];
                         $post_author = $row['post_user'];
@@ -52,7 +50,7 @@
                         </h1>
                         <!-- First Blog Post -->
                         <h2>
-                            <a href="post.php?p_id=<?php echo $post_id; ?>"> <?php echo $post_title; ?></a>
+                            <a href="post/<?php echo $post_id; ?>"> <?php echo $post_title; ?></a>
                         </h2>
 
                         <p class="lead">
@@ -61,7 +59,7 @@
 
                         <p><span class="glyphicon glyphicon-time"></span> Posted on <?php echo $post_date; ?></p>
                         <hr>
-                        <img class="img-responsive" src="images/<?php echo $post_image; ?>" alt="">
+                        <img class="img-responsive" src="/cms/images/<?php echo $post_image; ?>" alt="">
                         <hr>
                         <p><?php echo $post_content; ?></p>
                         <hr>

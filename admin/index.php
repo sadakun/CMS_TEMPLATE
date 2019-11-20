@@ -17,7 +17,10 @@
                     <h1 class="page-header">
                         Welcome to Admin
 
-                        <small><?php echo $_SESSION['username']; ?></small>
+                        <small><?php if (isset($_SESSION['username'])) {
+
+                                    echo $_SESSION['username'];
+                                } ?></small>
                     </h1>
                     <!-- <ol class="breadcrumb">
                         <li>

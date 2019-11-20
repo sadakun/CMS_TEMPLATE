@@ -139,7 +139,7 @@ if (isset($_POST['checkBoxArray'])) {
 
                     echo "<td><a href='post_comments.php?id=$post_id'>{$count_comments}</a></td>";
                     echo "<td>$post_date</td>";
-                    echo "<td> <a href='../post.php?p_id=$post_id'><i class='fa fa-clipboard'>view</i></a></td>";
+                    echo "<td> <a href='../post/$post_id'><i class='fa fa-clipboard'>view</i></a></td>";
 
                     echo "<td><a href='posts.php?source=edit_post&p_id=$post_id'><i class='fa fa-edit'>edit</i></a></td>";
 

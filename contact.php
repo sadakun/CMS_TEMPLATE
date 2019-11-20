@@ -1,16 +1,6 @@
 <?php include "includes/header.php"; ?>
-
-
-
 <?php
-
-
-
-
-
-
 if (isset($_POST['submit'])) {
-
     // use wordwrap() if lines are longer than 70 characters
     $to   = "sm123kuncoro@gmail.com";
     $subject   = wordwrap($_POST['subject'], 70);

@@ -1,7 +1,5 @@
 <?php
 
-checkIfUserIsLoginAndRedirect('/cms/admin');
-
 if (ifItIsMethod('post')) {
 
     if (isset($_POST['username']) && isset($_POST['password'])) {
@@ -41,7 +39,7 @@ if (ifItIsMethod('post')) {
         <?php if (isset($_SESSION['user_role'])) : ?>
             <h4>Logged in as <?php echo $_SESSION['username'] ?></h4>
 
-            <a href="includes/logout.php" class="btn btn-primary">Logout</a>
+            <a href="/cms/includes/logout.php" class="btn btn-primary">Logout</a>
         <?php else : ?>
             <h4>Login</h4>
             <!-- search form -->
@@ -84,7 +82,7 @@ if (ifItIsMethod('post')) {
                     while ($row = mysqli_fetch_assoc($select_categories_sidebar)) {
                         $cat_title = $row['cat_title'];
                         $cat_id = $row['cat_id'];
-                        echo "<li><a href='category.php?category=$cat_id'>{$cat_title}</a></li>";
+                        echo "<li><a href='/cms/category/$cat_id'>{$cat_title}</a></li>";
                     }
                     ?>
 

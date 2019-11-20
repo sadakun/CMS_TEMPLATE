@@ -2,10 +2,10 @@
 <?php session_start(); ?>
 
 <?php
-$_SESSION['username'] = null;
-$_SESSION['firstname'] = null;
-$_SESSION['lastname'] = null;
-$_SESSION['user_role'] = null;
+$_SESSION['username'] = $db_username;
+$_SESSION['user_firstname'] = $db_user_firstname;
+$_SESSION['user_lastname'] = $db_user_lastname;
+$_SESSION['user_role'] = $db_user_role;
 
-header("Location: ../index.php");
+header("Location: /cms");
 ?>

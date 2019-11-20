@@ -7,7 +7,7 @@
 <?php
 if (isset($_SESSION['user_role'])) { } else {
 
-    header("location: ../index.php");
+    header("Location: ../index.php");
 }
 ?>
 <?php include "delete_modal.php"; ?>

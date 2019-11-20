@@ -18,7 +18,7 @@
                 $get_post_author = escape($_GET['author']);
             }
 
-            $query = "SELECT * FROM posts WHERE post_user = '{$get_post_author}' && post_status = 'published' ORDER BY post_id DESC";
+            $query = "SELECT * FROM posts WHERE post_user = '{$get_post_author}' ";
             $all_posts = mysqli_query($connection, $query);
 
             while ($row = mysqli_fetch_assoc($all_posts)) {
