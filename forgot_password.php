@@ -4,14 +4,12 @@
 
 use PHPMailer\PHPMailer\PHPMailer;
 
-
 // Require FILES 
 require './vendor/autoload.php';
-
-require './classes/Config.php';
-
+// require './classes/Config.php';
 
 ?>
+
 <?php
 //Functions
 
@@ -38,29 +36,35 @@ if (ifItIsMethod('post')) {
                 mysqli_stmt_execute($stmt);
                 mysqli_stmt_close($stmt);
 
-                // Configure PHPMailer
-                // var_dump("Yes it does");
-                // exit;
+                // Instantiation
                 $mail = new PHPMailer();
-                $mail->setFrom('sm123kuncoro@gmail.com', 'Samuel Kuncoro');
-                $mail->addAddress($email);
-                $mail->Subject = 'tes purposes';
-                $mail->Body = 'email body';
+
+                // Settings SMTP Server Credential
                 $mail->isSMTP();
-                $mail->Host = Config::SMTP_HOST;
-                $mail->SMTPAuth = true;
-                $mail->Username = Config::SMTP_USER;
-                $mail->Password = Config::SMTP_PASSWORD;
-                $mail->Port = Config::SMTP_PORT;
-                // $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Host         = Config::SMTP_HOST;
+                $mail->Username     = Config::SMTP_USER;
+                $mail->Password     = Config::SMTP_PASSWORD;
+                $mail->Port         = Config::SMTP_PORT;
+                $mail->SMTPSecure   = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->SMTPAuth     = true;
+
+                //Recipients
+                $mail->setFrom('admin@sadakuns.support.com', 'Samuel Kuncoro');
+                $mail->addAddress($email);
+
+                // Content
                 $mail->isHTML(true);
-                // $mail->CharSet = 'UTF-8';
+                $mail->CharSet = 'UTF-8';
+                $mail->Subject  = 'Change Your Password NOW!!';
+                $mail->Body     = '<p>Click here to reset your password 
+                <a href="http://localhost/cms/reset_password.php?email=' . $email . '&token=' . $token . ' ">http://localhost/cms/reset_password.php?email=' . $email . '&token=' . $token . '</a>
+                </p>';
 
 
 
                 if ($mail->send()) {
 
-                    echo "IT WAS SENT";
+                    $emailSent = true;
                 } else {
 
                     echo "NOT SENT";
@@ -74,12 +78,16 @@ if (ifItIsMethod('post')) {
 }
 ?>
 
-
+<br>
+<br>
+<br>
+<br>
+<br>
 
 <!-- Page Content -->
 <div class="container">
 
-    <div class="form-gap"></div>
+
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-md-offset-4">
@@ -87,47 +95,52 @@ if (ifItIsMethod('post')) {
                     <div class="panel-body">
                         <div class="text-center">
 
+                            <?php if (!isset($emailSent)) : ?>
 
-                            <h3><i class="fa fa-lock fa-4x"></i></h3>
-                            <h2 class="text-center">Forgot Password?</h2>
-                            <p>You can reset your password here.</p>
-                            <div class="panel-body">
+                                <h3><i class="fa fa-lock fa-4x"></i></h3>
+                                <h2 class="text-center">Forgot Password?</h2>
+                                <p>You can reset your password here.</p>
+                                <div class="panel-body">
 
 
 
 
-                                <form id="register-form" role="form" autocomplete="off" class="form" method="post">
+                                    <form id="register-form" role="form" autocomplete="off" class="form" method="post">
 
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
-                                            <input id="email" name="email" placeholder="email address" class="form-control" type="email">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
+                                                <input id="email" name="email" placeholder="email address" class="form-control" type="email">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <input name="recover-submit" class="btn btn-lg btn-primary btn-block" value="Reset Password" type="submit">
-                                    </div>
 
-                                    <input type="hidden" class="hide" name="token" id="token" value="">
-                                </form>
+                                        <div class="form-group">
+                                            <input name="recover-submit" class="btn btn-lg btn-primary btn-block" value="Reset Password" type="submit">
+                                        </div>
 
-                            </div><!-- Body-->
+                                        <div class="form-group">
+                                            <input type="hidden" class="hide" name="token" id="token" value="">
+                                        </div>
+                                    </form>
+
+                                </div><!-- Body-->
+                            <?php else : ?>
+                                <h2>Please check your email</h2>
+                            <?php endif; ?>
+
 
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <br>
     </div>
+
 
 
     <hr>
 
-</div> <!-- /.container -->
-
-
-<hr>
-
-<?php include "includes/footer.php"; ?>
+    <?php include "includes/footer.php"; ?>
 
 </div> <!-- /.container -->

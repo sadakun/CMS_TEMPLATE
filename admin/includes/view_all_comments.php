@@ -63,11 +63,20 @@ if (isset($_POST['checkBoxArray'])) {
                 <?php
                 // $query = "SELECT * FROM comments ORDER BY comment_id DESC";
                 // $select_comments = mysqli_query($connection, $query);
-                $query = "SELECT comments.comment_id ,comments.comment_post_id , comments.comment_author,  comments.comment_content, ";
-                $query .= "comments.comment_email ,comments.comment_status ,comments.comment_date, posts.post_id, posts.post_title ";
-                $query .= "FROM comments ";
-                $query .= "LEFT JOIN posts ON comments.comment_post_id = posts.post_id ORDER BY comment_id DESC ";
-
+                // SELECT comments.comment_id, comments.comment_post_id, comments.comment_author, comments.comment_email, posts.post_id 
+                // FROM comments JOIN posts ON comments.comment_post_id = posts.post_id WHERE post_user_id = 45
+                $users = currentUser();
+                if (isAdmin($_SESSION['username'])) {
+                    $query = "SELECT comments.comment_id ,comments.comment_post_id , comments.comment_author,  comments.comment_content, ";
+                    $query .= "comments.comment_email ,comments.comment_status ,comments.comment_date, posts.post_id, posts.post_title ";
+                    $query .= "FROM comments ";
+                    $query .= "JOIN posts ON comments.comment_post_id = posts.post_id ORDER BY comment_id DESC ";
+                } else {
+                    $query = "SELECT comments.comment_id ,comments.comment_post_id , comments.comment_author,  comments.comment_content, ";
+                    $query .= "comments.comment_email ,comments.comment_status ,comments.comment_date, posts.post_id, posts.post_title ";
+                    $query .= "FROM comments ";
+                    $query .= "JOIN posts ON comments.comment_post_id = posts.post_id WHERE post_user_id = $users ORDER BY comment_id DESC ";
+                }
                 $select_comments = mysqli_query($connection, $query);
                 while ($row = mysqli_fetch_assoc($select_comments)) {
                     $comment_id         = $row['comment_id'];
@@ -90,7 +99,7 @@ if (isset($_POST['checkBoxArray'])) {
                         echo "<td>{$comment_email}</td>";
                         echo "<td>{$comment_status}</td>";
 
-                        echo "<td><a href='../post.php?p_id=$post_id'>$post_title</a></td>";
+                        echo "<td><a href='../post/$post_id'>$post_title</a></td>";
 
 
                         echo "<td>{$comment_date}</td>";

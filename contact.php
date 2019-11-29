@@ -20,17 +20,23 @@ if (isset($_POST['submit'])) {
 
     <section id="login">
         <div class="container">
-            <div class="position-relative col-sm-12  col-xs-mobile-fullwidth text-center margin-ten-bottom">
-                <div class="wpd-innner-wrapper">
+            <div class="position-relative col-sm-12  col-xs-mobile-fullwidth margin-ten-bottom">
+                <div class="text-center">
                     <h1>Contact</h1>
+                    <hr>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
 
                     <div class="wpd-innner-wrapper text-center">
-                        <h2 style="margin:16px 0">Sadakun's</h2>
-                        <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).<br> City of Kediri. East Java - Indonesia.</p>
+                        <h2 style="margin:50px 0">@Sadakun's</h2>
+                        <p><i class="td-icon-font td-icon-facebook"></i>
+                            <p><i class="fab fa-github"></i></p>
+                            <h6 style="margin-bottom:16px">Samuel Damar Kuncoro</h6>
+                            <p>github.com/<a href="http://github.com/sadakun">sadakun </a></p>
+                            <p>+62 812 2613 9407</p><br> City of Kediri. East Java - Indonesia.
+                        </p>
                     </div>
 
                     <div class="wpb_column vc_column_container col-sm-12 col-md-6 col-xs-12 xs-text-center no-padding" style="padding-bottom:20px!important">
@@ -62,7 +68,7 @@ if (isset($_POST['submit'])) {
 
                             <div class="form-group">
                                 <label for="subject">Subject</label>
-                                <input type="email" name="subject" id="email" class="form-control" placeholder="Enter Your Subject">
+                                <input type="text" name="subject" id="" class="form-control" placeholder="Enter Your Subject">
                             </div>
 
                             <div class="form-group">

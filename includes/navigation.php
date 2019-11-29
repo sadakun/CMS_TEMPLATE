@@ -63,7 +63,7 @@
                     <a href="/cms/contact">Contact</a>
                 </li>
                 <li>
-                    <a href="#">About</a>
+                    <a href="/cms/about">About</a>
                 </li>
 
                 <?php

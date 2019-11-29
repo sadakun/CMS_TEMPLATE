@@ -1,17 +1,177 @@
 <?php
 
+//============ DATABASE HELPER FUNCTIONS ============\\
+
 function redirect($location)
 {
     header("Location: " . $location);
     exit;
 }
-##########################################################################################
+
+function query($query)
+{
+    global $connection;
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+    return $result;
+}
+
+function fetchRecords($result)
+{
+    return mysqli_fetch_array($result);
+}
+
+function countRecords($result)
+{
+    return mysqli_num_rows($result);
+}
+
+//=============== END DATABASE HELPERS ==============\\
+
+
+
+//============ GENERAL HELPER FUNCTIONS =============\\
+
+function getGeneralUserName()
+{
+    return isset($_SESSION['username']) ? $_SESSION['username'] : null;
+}
+
+//=============== END GENERAL HELPERS ===============\\
+
+
+
+
+//======== AUTHENTIFICATION HELPER FUNCTIONS =========\\
+
+function isAdmin()
+{
+    if (isLogin()) {
+        $result = query("SELECT user_role FROM users WHERE user_id=" . $_SESSION['user_id'] . "");
+        $row = fetchRecords($result);
+        if ($row['user_role'] == 'admin') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    return false;
+}
+
+//============ END AUTHENTIFICATION HELPERS ===========\\
+
+
+
+//========== USER SPECIFIC HELPER FUNCTIONS ===========\\
+
+function getAllUserPosts()
+{
+    return query("SELECT * FROM posts WHERE post_user_id=" . loginUserId() . "");
+}
+
+function getAllPostUserComments()
+{
+    return query("SELECT * FROM posts
+    INNER JOIN comments ON posts.post_id = comments.comment_post_id
+    WHERE post_user_id=" . loginUserId() . "");
+}
+
+function getAllUserCategories()
+{
+    return query("SELECT * FROM categories WHERE cat_user_id=" . loginUserId() . "");
+}
+
+function getAllUserPublishPosts()
+{
+    return query("SELECT * FROM posts WHERE post_user_id=" . loginUserId() . " AND post_status='published'");
+}
+
+function getAllUserDraftPosts()
+{
+    return query("SELECT * FROM posts WHERE post_user_id=" . loginUserId() . " AND post_status='draft'");
+}
+
+function getAllUserApprovedPostsComments()
+{
+    return query("SELECT * FROM posts
+    INNER JOIN comments ON posts.post_id = comments.comment_post_id
+    WHERE post_user_id=" . loginUserId() . " AND comment_status='approved'");
+}
+
+
+function getAllUserUnapprovedPostsComments()
+{
+    return query("SELECT * FROM posts
+    INNER JOIN comments ON posts.post_id = comments.comment_post_id
+    WHERE post_user_id=" . loginUserId() . " AND comment_status='unapproved'");
+}
+
+//============= END USER SPECIFIC HELPERS =============\\
+
+
+
+//========== ADMIN SPECIFIC HELPER FUNCTIONS ===========\\
+
+function adminGetAllUserPosts()
+{
+    return query("SELECT * FROM posts");
+}
+
+function adminGetAllPostUserComments()
+{
+    return query("SELECT * FROM posts
+    INNER JOIN comments ON posts.post_id = comments.comment_post_id");
+}
+function adminGetAllUser()
+{
+    return query("SELECT * FROM users");
+}
+
+function adminGetAllUserCategories()
+{
+    return query("SELECT * FROM categories");
+}
+
+function adminGetAllUserPublishPosts()
+{
+    return query("SELECT * FROM posts WHERE post_status='published'");
+}
+
+function adminGetAllUserDraftPosts()
+{
+    return query("SELECT * FROM posts WHERE post_status='draft'");
+}
+
+function adminGetAllUserApprovedPostsComments()
+{
+    return query("SELECT * FROM posts
+    INNER JOIN comments ON posts.post_id = comments.comment_post_id
+    WHERE comment_status='approved'");
+}
+
+
+function adminGetAllUserUnapprovedPostsComments()
+{
+    return query("SELECT * FROM posts
+    INNER JOIN comments ON posts.post_id = comments.comment_post_id
+    WHERE comment_status='unapproved'");
+}
+
+//============= END ADMIN SPECIFIC HELPERS =============\\
+
+function confirmQuery($result)
+{
+    global $connection;
+    if (!$result) {
+        die("QUERY FAILED" . mysqli_error($connection));
+    }
+}
+
 function escape($string)
 {
     global $connection;
     return mysqli_real_escape_string($connection, trim($string));
 }
-##########################################################################################
 //----------------------------------------------------------------------------
 function ifItIsMethod($method = null)
 {
@@ -36,13 +196,30 @@ function isLogin()
     return false;
 }
 
-function confirmQuery($result)
+function loginUserId()
 {
-    global $connection;
-    if (!$result) {
-        die("QUERY FAILED" . mysqli_error($connection));
+    if (isLogin()) {
+        $result = query("SELECT * FROM users WHERE username='" . $_SESSION['username'] . "'");
+        confirmQuery($result);
+        $user = mysqli_fetch_array($result);
+        return mysqli_num_rows($result) >= 1 ? $user['user_id'] : false;
     }
-    return $result;
+    return false;
+}
+
+function userLikeThisPost($post_id)
+{
+    $result = query("SELECT * FROM likes WHERE like_user_id	=" . loginUserId() . " AND like_post_id={$post_id}");
+    confirmQuery($result);
+    return mysqli_num_rows($result) >= 1 ? true : false;
+}
+
+function getPostlikes($post_id)
+{
+
+    $result = query("SELECT * FROM likes WHERE like_post_id=$post_id");
+    confirmQuery($result);
+    echo mysqli_num_rows($result);
 }
 ##########################################################################################
 //----------------------------------------------------------------------------
@@ -75,21 +252,23 @@ function insertCategories()
     global $connection;
     if (isset($_POST['submit'])) {
         $cat_title = $_POST['cat_title'];
+        $cat_user_id = $_SESSION['user_id'];
         if ($cat_title == "" || empty($cat_title)) {
             echo "This field should not be empty";
+        } elseif (categoryExist($cat_title)) {
+            echo "Category already exist";
         } else {
-            $statement = mysqli_prepare($connection, "INSERT INTO categories(cat_title) VALUE(?) ");
-            mysqli_stmt_bind_param($statement, 's', $cat_title);
-            mysqli_stmt_execute($statement);
-
-
-            if (!$statement) {
+            $stmt = mysqli_prepare($connection, "INSERT INTO categories(cat_user_id, cat_title) VALUE(?,?) ");
+            mysqli_stmt_bind_param($stmt, 'is', $cat_user_id, $cat_title);
+            mysqli_stmt_execute($stmt);
+            if (!$stmt) {
                 die("Query Failed" . mysqli_error($connection));
             }
+            mysqli_stmt_close($stmt);
         }
-        mysqli_stmt_close($statement);
     }
 }
+
 ##########################################################################################
 //---------------------------------Search Query------------------------------//
 function findAllCategories()
@@ -124,15 +303,7 @@ function deleteCategories()
 }
 ##########################################################################################
 //----------------------------------Dashboard Count Data-------------------------------
-function recordCount($table)
-{
-    global $connection;
-    $query = "SELECT * FROM " . $table;
-    $select_all_post = mysqli_query($connection, $query);
-    $result = mysqli_num_rows($select_all_post);
-    confirmQuery($result);
-    return $result;
-}
+
 ##########################################################################################
 //---------------------------------------------------------------------------------------
 function approve()
@@ -195,7 +366,7 @@ function userOnline()
             $users_online_query = mysqli_query($connection, "SELECT * FROM users_online WHERE time > '$time_out'");
             echo $count_user = mysqli_num_rows($users_online_query);
         }
-    }
+    }  // get request isset()
 }
 userOnline();
 ##########################################################################################
@@ -209,15 +380,14 @@ function checkStatus($table, $column, $status)
     return mysqli_num_rows($result);
 }
 ##########################################################################################
-function isAdmin($username)
+function categoryExist($cat_title)
 {
     global $connection;
-    $query = "SELECT user_role FROM users WHERE username = '$username' ";
+    $query = "SELECT cat_title FROM categories WHERE cat_title = '$cat_title' ";
     $result = mysqli_query($connection, $query);
     confirmQuery($result);
 
-    $row = mysqli_fetch_array($result);
-    if ($row['user_role'] == 'admin') {
+    if (mysqli_num_rows($result) > 0) {
         return true;
     } else {
         return false;
@@ -293,6 +463,7 @@ function loginUser($username, $password)
 
         if (password_verify($password, $db_user_password)) {
 
+            $_SESSION['user_id']   = $db_user_id;
             $_SESSION['username']   = $db_username;
             $_SESSION['firstname']  = $db_user_firstname;
             $_SESSION['lastname']   = $db_user_lastname;
@@ -308,6 +479,20 @@ function loginUser($username, $password)
     return true;
 }
 
+function currentUser()
+{
+    if (isset($_SESSION['user_id'])) {
+        return $_SESSION['user_id'];
+    }
+    return false;
+}
+
+// function imagePlaceholder($image='')
+// {
+//     if(!image){
+//         return 
+//     }
+// }
 ######################--old encrypt password--##########################
 // $password = crypt($password, $db_user_password);
 

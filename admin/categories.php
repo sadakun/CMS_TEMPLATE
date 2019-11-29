@@ -18,6 +18,7 @@
                     <div class="col-xs-6">
                         <!-- Insert Query -->
                         <?php insertCategories(); ?>
+
                         <form action="" method="post">
                             <div class="form-group">
                                 <label for="cat-title">Add Category</label>

@@ -1,19 +1,21 @@
 <?php include "includes/admin_header.php"; ?>
 <?php
 
-$post_count                 = countRecords(getAllUserPosts());
+$post_count                 = countRecords(adminGetAllUserPosts());
 
-$comment_count              = countRecords(getAllPostUserComments());
+$comment_count              = countRecords(adminGetAllPostUserComments());
 
-$category_count             = countRecords(getAllUserCategories());
+$user_count                 = countRecords(adminGetAllUser());
 
-$post_published_count       = countRecords(getAllUserPublishPosts());
+$category_count             = countRecords(adminGetAllUserCategories());
 
-$post_draft_count           = countRecords(getAllUserDraftPosts());
+$post_published_count       = countRecords(adminGetAllUserPublishPosts());
 
-$approved_comment_count     = countRecords(getAllUserApprovedPostsComments());
+$post_draft_count           = countRecords(adminGetAllUserDraftPosts());
 
-$unapproved_comment_count   = countRecords(getAllUserUnapprovedPostsComments());
+$approved_comment_count     = countRecords(adminGetAllUserApprovedPostsComments());
+
+$unapproved_comment_count   = countRecords(adminGetAllUserUnapprovedPostsComments());
 
 ?>
 <div id="wrapper">
@@ -33,7 +35,7 @@ $unapproved_comment_count   = countRecords(getAllUserUnapprovedPostsComments());
                     <h1 class="page-header">
                         <?php echo strtoupper(getGeneralUserName()); ?>
                         DASHBOARD
-                        <small><br>(User's)</small>
+                        <small><br>(Admin)</small>
                     </h1>
                     <ol class="breadcrumb">
                         <li>
@@ -51,7 +53,7 @@ $unapproved_comment_count   = countRecords(getAllUserUnapprovedPostsComments());
             <!-- /.row -->
 
             <div class="row">
-                <div class="col-lg-4 col-md-6">
+                <div class="col-lg-3 col-md-6">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <div class="row">
@@ -73,7 +75,7 @@ $unapproved_comment_count   = countRecords(getAllUserUnapprovedPostsComments());
                         </a>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6">
+                <div class="col-lg-3 col-md-6">
                     <div class="panel panel-green">
                         <div class="panel-heading">
                             <div class="row">
@@ -81,6 +83,7 @@ $unapproved_comment_count   = countRecords(getAllUserUnapprovedPostsComments());
                                     <i class="fa fa-comments fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
+
                                     <?php echo "<div class='huge'>{$comment_count}</div> " ?>
                                     <div>Comments</div>
                                 </div>
@@ -95,7 +98,7 @@ $unapproved_comment_count   = countRecords(getAllUserUnapprovedPostsComments());
                         </a>
                     </div>
                 </div>
-                <!-- <div class="col-lg-3 col-md-6">
+                <div class="col-lg-3 col-md-6">
                     <div class="panel panel-yellow">
                         <div class="panel-heading">
                             <div class="row">
@@ -103,7 +106,7 @@ $unapproved_comment_count   = countRecords(getAllUserUnapprovedPostsComments());
                                     <i class="fa fa-user fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    
+                                    <?php echo "<div class='huge'>" . $user_count . "</div> " ?>
                                     <div> Users</div>
                                 </div>
                             </div>
@@ -116,8 +119,8 @@ $unapproved_comment_count   = countRecords(getAllUserUnapprovedPostsComments());
                             </div>
                         </a>
                     </div>
-                </div> -->
-                <div class="col-lg-4 col-md-6">
+                </div>
+                <div class="col-lg-3 col-md-6">
                     <div class="panel panel-red">
                         <div class="panel-heading">
                             <div class="row">
@@ -154,10 +157,10 @@ $unapproved_comment_count   = countRecords(getAllUserUnapprovedPostsComments());
                         var data = new google.visualization.arrayToDataTable([
                             ['Move', 'Percentage'],
                             <?php
-                            $element_text = ['All Posts', 'Active Posts', 'Draft Posts', 'Comments', 'Approved Comments', 'Pending Comments', 'Categories'];
-                            $element_count = [$post_count, $post_published_count, $post_draft_count, $comment_count, $approved_comment_count, $unapproved_comment_count, $category_count];
+                            $element_text = ['All Posts', 'Active Posts', 'Draft Posts', 'Users', 'Comments', 'Approved Comments', 'Pending Comments', 'Categories'];
+                            $element_count = [$post_count, $post_published_count, $post_draft_count, $user_count, $comment_count, $approved_comment_count, $unapproved_comment_count, $category_count];
 
-                            for ($i = 0; $i < 7; $i++) {
+                            for ($i = 0; $i < 8; $i++) {
                                 echo "['{$element_text[$i]}'" . "," . " {$element_count[$i]}],";
                             }
 

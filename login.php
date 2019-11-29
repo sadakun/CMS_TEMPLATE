@@ -20,7 +20,6 @@ if (ifItIsMethod('post')) {
 <!-- Navigation -->
 <?php include "includes/navigation.php"; ?>
 
-
 <!-- Page Content -->
 <div class="container">
 
@@ -28,6 +27,7 @@ if (ifItIsMethod('post')) {
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-md-offset-4">
+                <h2 style="margin:100px 0"></h2>
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="text-center">
@@ -35,6 +35,7 @@ if (ifItIsMethod('post')) {
 
                             <h3><i class="fa fa-user fa-4x"></i></h3>
                             <h2 class="text-center">Login</h2>
+
                             <div class="panel-body">
 
 

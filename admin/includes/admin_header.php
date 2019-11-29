@@ -10,7 +10,7 @@ if (isset($_SESSION['user_role'])) { } else {
     header("Location: ../index.php");
 }
 ?>
-<?php include "delete_modal.php"; ?>
+
 
 
 <!DOCTYPE html>
@@ -33,8 +33,10 @@ if (isset($_SESSION['user_role'])) { } else {
     <link href="css/sb-admin.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css">
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- <link href="font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css">
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
 
     <!-- <script type="text/javascript" src="https://www.google.com/jsapi"></script> -->
     <!-- Custom CSS -->

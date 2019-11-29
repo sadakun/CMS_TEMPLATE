@@ -1,14 +1,16 @@
 <?php
-
 if (ifItIsMethod('post')) {
 
-    if (isset($_POST['username']) && isset($_POST['password'])) {
 
-        loginUser($_POST['username'], $_POST['password']);
-    } else {
+    if (isset($_POST['login'])) {
 
 
-        redirect('index.php');
+        if (isset($_POST['username']) && isset($_POST['password'])) {
+
+            loginUser($_POST['username'], $_POST['password']);
+        } else {
+            redirect('index');
+        }
     }
 }
 
@@ -20,7 +22,7 @@ if (ifItIsMethod('post')) {
     <div class="well">
         <h4>Blog Search</h4>
         <!-- search form -->
-        <form action="search.php" method="post">
+        <form action="/cms/search.php" method="post">
 
             <div class="input-group">
                 <input name="search" type="text" class="form-control">

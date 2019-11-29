@@ -1,7 +1,9 @@
 <?php
+
 if (isset($_POST['create_post'])) {
+
+    $post_user_id         = escape($_POST['post_user_id']);
     $post_title         = escape($_POST['post_title']);
-    $post_user          = escape($_POST['post_user']);
     $post_category_id   = escape($_POST['post_category']);
     $post_status        = escape($_POST['post_status']);
     $post_image         = $_FILES['image']['name'];
@@ -13,8 +15,9 @@ if (isset($_POST['create_post'])) {
     // move_uploaded_file($post_image_temp, "../images/$post_image");
     move_uploaded_file($post_image_temp, "../images/" . $post_image);
 
-    $query = "INSERT INTO posts(post_category_id, post_title, post_user, post_date, post_image, post_content, post_tag, post_status)";
-    $query .= "VALUES({$post_category_id}, '{$post_title}', '{$post_user}', now(), '{$post_image}', '{$post_content}', '{$post_tag}', '{$post_status}' ) ";
+    $query = "INSERT INTO posts(post_category_id, post_user_id, post_title, post_date, post_image, post_content, post_tag, post_status)";
+    $query .= "VALUES({$post_category_id}, {$post_user_id}, '{$post_title}', now(), '{$post_image}', '{$post_content}', '{$post_tag}', '{$post_status}' ) ";
+
     $create_post_query = mysqli_query($connection, $query);
     confirmQuery($create_post_query);
 
@@ -31,7 +34,7 @@ if (isset($_POST['create_post'])) {
     </div>
 
     <div class="form-group">
-        <label for="category">Categories:</label>
+        <label for="category">Categories</label><br>
         <select name="post_category" id="post_category">
             <?php
             $category_query = "SELECT * FROM categories";
@@ -49,8 +52,8 @@ if (isset($_POST['create_post'])) {
     </div>
 
     <div class="form-group">
-        <label for="users">Users:</label>
-        <select name="post_user" id="">
+        <label for="users">Author</label><br>
+        <select name="post_user_id" id="">
             <?php
             $user_query = "SELECT * FROM users";
             $select_users = mysqli_query($connection, $user_query);
@@ -60,14 +63,14 @@ if (isset($_POST['create_post'])) {
                 $user_id = $row['user_id'];
                 $username = $row['username'];
 
-                echo "<option value='$username'>{$username}</option>";
+                echo "<option value='$user_id'>{$username}</option>";
             }
             ?>
         </select>
     </div>
 
     <div class="form-group">
-        <label for="status">Post Status:</label>
+        <label for="status">Post Status</label><br>
         <select name="post_status" id="">
             <option value='draft'>Choose Status</option>
             <option value='draft'>Draft</option>
